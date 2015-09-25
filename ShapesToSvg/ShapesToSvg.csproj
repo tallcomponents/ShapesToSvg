@@ -45,9 +45,6 @@
     <Reference Include="TallComponents.PDF.Kit">
       <HintPath>..\packages\TallComponents.PDFKit.4.0.56.0\lib\net40\TallComponents.PDF.Kit.dll</HintPath>
     </Reference>
-    <Reference Include="TallComponents.PDF.Rasterizer">
-      <HintPath>..\packages\TallComponents.PDFRasterizer.3.0.125.0\lib\net40\TallComponents.PDF.Rasterizer.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />

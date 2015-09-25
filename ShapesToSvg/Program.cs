@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 
 using TallComponents.PDF;
-using R = TallComponents.PDF.Rasterizer;
 
 namespace ExtractShapes
 {
