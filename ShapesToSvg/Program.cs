@@ -42,10 +42,10 @@ namespace ExtractShapes
                   {
                      double viewerWidth = page.Orientation == Orientation.Rotate0 || page.Orientation == Orientation.Rotate180 ? page.Width : page.Height;
                      double viewerHeight = page.Orientation == Orientation.Rotate0 || page.Orientation == Orientation.Rotate180 ? page.Height : page.Width;
-                     var writer = new ShapeWriter(outStream, viewerTransform);
+                     var writer = new ShapeWriter(outStream);
                      writer.Start(viewerWidth, viewerHeight);
                      var shapes = page.CreateShapes();
-                     writer.WriteShape(shapes, new Matrix());
+                     writer.WriteShape(shapes, viewerTransform);
                      writer.End();
                   }
                }

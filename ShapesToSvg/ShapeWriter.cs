@@ -11,12 +11,10 @@ namespace ExtractShapes
    public class ShapeWriter
    {
       StreamWriter outStream;
-      Matrix viewerTransform;
 
-      public ShapeWriter(StreamWriter outStream, Matrix viewerTransform)
+      public ShapeWriter(StreamWriter outStream)
       {
          this.outStream = outStream;
-         this.viewerTransform = viewerTransform;
       }
 
       private string GenPoint(double x, double y, Matrix transform)
@@ -24,7 +22,6 @@ namespace ExtractShapes
          PointF[] points = { new PointF((float)x, (float)y) };
 
          transform.TransformPoints(points);
-         viewerTransform.TransformPoints(points);
 
          return String.Format("{0} {1}", points[0].X, points[0].Y);
       }
@@ -141,7 +138,7 @@ namespace ExtractShapes
             // transformations from down to up in the tree (from leafs to root), so swap the matrices.
             // This method works because matrix multiplication is associative.
             Matrix newTransform = contentshape.Transform.CreateGdiMatrix();
-            newTransform.Multiply(transform);
+            newTransform.Multiply(transform, MatrixOrder.Append);
 
             if (shape is TallComponents.PDF.Shapes.FreeHandShape)
             {
