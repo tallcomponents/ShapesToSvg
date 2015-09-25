@@ -26,34 +26,6 @@ namespace ExtractShapes
          return String.Format("{0} {1}", points[0].X, points[0].Y);
       }
 
-      private System.Drawing.Rectangle TransformBox(double x, double y, double w, double h, Matrix transform)
-      {
-         PointF[] points = { new PointF((float)x, (float)y), new PointF((float)(x + w), (float)(y + h)) };
-
-         transform.TransformPoints(points);
-
-         var rect = new System.Drawing.Rectangle(
-                 (int)Math.Min(points[0].X, points[1].X),
-                 (int)Math.Min(points[0].Y, points[1].Y),
-                 (int)Math.Abs(points[0].X - points[1].X),
-                 (int)Math.Abs(points[0].Y - points[1].Y));
-
-         return rect;
-      }
-
-      private string GenBox(double x, double y, double w, double h, Matrix transform)
-      {
-         var rect = TransformBox(x, y, w, h, transform);
-
-         return String.Format("{0} {1} W{2} H{3}", rect.X, rect.Y, rect.Width, rect.Height);
-      }
-
-      private void DrawBox(double x, double y, double w, double h, Matrix transform)
-      {
-         var rect = TransformBox(x, y, w, h, transform);
-         //pageGraphics.DrawRectangle(Pens.Black, rect);
-      }
-
       public void WriteShapes(ShapeCollection shapes, Matrix transform)
       {
          foreach (var shape in shapes)
@@ -151,71 +123,6 @@ namespace ExtractShapes
             else if (shape is TallComponents.PDF.Shapes.LayerShape)
             {
                WriteShapes((LayerShape)shape, newTransform);
-            }
-            
-            return;
-            
-            if (shape is TallComponents.PDF.Shapes.BezierShape)
-            {
-               var s = (BezierShape)shape;
-               outStream.Write("BezierShape: ");
-               outStream.Write("{{{0} {1} {2} {3}}}",
-                   GenPoint(s.X0, s.Y0, newTransform), GenPoint(s.X1, s.Y1, newTransform),
-                   GenPoint(s.X2, s.Y2, newTransform), GenPoint(s.X3, s.Y3, newTransform));
-               outStream.WriteLine();
-            }
-            else if (shape is TallComponents.PDF.Shapes.ClipShape)
-            {
-               var s = (ClipShape)shape;
-               outStream.Write("ClipShape: ");
-               WriteFreeHandPath(s.Paths, newTransform);
-               outStream.WriteLine();
-            }
-            else if (shape is TallComponents.PDF.Shapes.EllipseShape)
-            {
-               var s = (EllipseShape)shape;
-               outStream.Write("EllipseShape: ");
-               outStream.Write("{{C{0} RX{1} RY{2}}}",
-                   GenPoint(s.CenterX, s.CenterY, newTransform), s.RadiusX, s.RadiusY);
-               outStream.WriteLine();
-            }
-            else if (shape is TallComponents.PDF.Shapes.ImageShape)
-            {
-               var s = (ImageShape)shape;
-               outStream.Write("ImageShape: ");
-               outStream.Write("{{S{0}}}", GenBox(s.X, s.Y, s.Width, s.Height, newTransform));
-               outStream.WriteLine();
-            }
-            else if (shape is TallComponents.PDF.Shapes.LineShape)
-            {
-               var s = (LineShape)shape;
-               outStream.Write("LineShape: ");
-               outStream.Write("{{S{0} L{1}}}",
-                   GenPoint(s.StartX, s.StartY, newTransform),
-                   GenPoint(s.EndX, s.EndY, newTransform));
-               outStream.WriteLine();
-            }
-            else if (shape is TallComponents.PDF.Shapes.RectangleShape)
-            {
-               var s = (RectangleShape)shape;
-               outStream.Write("RectangleShape: ");
-               outStream.Write("{{S{0}}}", GenBox(s.X, s.Y, s.Width, s.Height, newTransform));
-               outStream.WriteLine();
-            }
-            else if (shape is TallComponents.PDF.Shapes.TextShape)
-            {
-               var s = (TextShape)shape;
-               outStream.Write("TextShape: ");
-               outStream.Write("{{S{0} \"{1}\"}}",
-                   GenBox(s.BoundingBox.X, s.BoundingBox.Y, s.BoundingBox.Width, s.BoundingBox.Height, newTransform), s.Text);
-               outStream.WriteLine();
-
-               DrawBox(s.BoundingBox.X, s.BoundingBox.Y, s.BoundingBox.Width, s.BoundingBox.Height, newTransform);
-            }
-            else
-            {
-               outStream.Write("Unhandled shape: ");
-               outStream.WriteLine(shape.GetType().Name);
             }
          }
       }
