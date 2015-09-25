@@ -13,20 +13,16 @@ namespace ExtractShapes
    {
       static void Main(string[] args)
       {
-         string[] fileNames = new string[]  
+         string[] paths = Directory.GetFiles(@"..\..\pdf", "*.pdf");
+         foreach (string path in paths)
          {
-            "oval", "3BigPreview90", "0703 Base-11", "5242_C3.0-0_Bid_Set"
-         };
-
-         foreach (string fileName in fileNames)
-         {
-            convert(fileName);
+            convert(path);
          }
       }
 
-      static void convert(string fileName)
+      static void convert(string pdfPath)
       {
-         using (FileStream inFile = new FileStream(string.Format(@"..\..\{0}.pdf", fileName), FileMode.Open, FileAccess.Read))
+         using (FileStream inFile = new FileStream(pdfPath, FileMode.Open, FileAccess.Read))
          {
             Document document = new Document(inFile);
 
@@ -34,9 +30,8 @@ namespace ExtractShapes
             {
                var viewerTransform = GetViewerTransform(page);
 
-               int pagenr = page.Index + 1;
-
-               using (FileStream outFile = new FileStream(string.Format(@"..\..\{0}_{1}.html", fileName, pagenr), FileMode.Create, FileAccess.Write))
+               string htmlPath = string.Format(@"..\..\{0}_{1}.html", Path.GetFileNameWithoutExtension(pdfPath), page.Index + 1);
+               using (FileStream outFile = new FileStream(htmlPath, FileMode.Create, FileAccess.Write))
                {
                   using (StreamWriter outStream = new StreamWriter(outFile))
                   {
