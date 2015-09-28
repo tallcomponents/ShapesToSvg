@@ -36,7 +36,7 @@ namespace ExtractShapes
                   {
                      double viewerWidth = page.Orientation == Orientation.Rotate0 || page.Orientation == Orientation.Rotate180 ? page.Width : page.Height;
                      double viewerHeight = page.Orientation == Orientation.Rotate0 || page.Orientation == Orientation.Rotate180 ? page.Height : page.Width;
-                     var writer = new ShapeWriter(outStream);
+                     var writer = new SvgWriter(outStream);
                      writer.Start(viewerWidth, viewerHeight);
                      var shapes = page.CreateShapes();
                      writer.WriteShape(shapes, viewerTransform);

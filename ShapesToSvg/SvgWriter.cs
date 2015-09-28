@@ -8,11 +8,11 @@ using TallComponents.PDF.Shapes;
 
 namespace ExtractShapes
 {
-   public class ShapeWriter
+   public class SvgWriter
    {
       StreamWriter outStream;
 
-      public ShapeWriter(StreamWriter outStream)
+      public SvgWriter(StreamWriter outStream)
       {
          this.outStream = outStream;
       }
