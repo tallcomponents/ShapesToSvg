@@ -12,11 +12,6 @@ namespace ExtractShapes
    {
       StreamWriter outStream;
 
-      public SvgWriter(StreamWriter outStream)
-      {
-         this.outStream = outStream;
-      }
-
       private string writePoint(double x, double y, Matrix transform)
       {
          PointF[] points = { new PointF((float)x, (float)y) };
@@ -26,7 +21,7 @@ namespace ExtractShapes
          return String.Format("{0} {1}", points[0].X, points[0].Y);
       }
 
-      public void writeShapes(ShapeCollection shapes, Matrix transform)
+      private void writeShapes(ShapeCollection shapes, Matrix transform)
       {
          foreach (var shape in shapes)
          {
@@ -34,7 +29,7 @@ namespace ExtractShapes
          }
       }
 
-      public void writeLayerShape(LayerShape shapes, Matrix transform)
+      private void writeLayerShape(LayerShape shapes, Matrix transform)
       {
          foreach (var shape in shapes)
          {
@@ -85,6 +80,11 @@ namespace ExtractShapes
          outStream.Write("<path stroke=\"blue\" stroke-wdith=\"3\" fill=\"none\" d=\"");
          writeFreeHandPaths(freeHandShape.Paths, transform);
          outStream.Write("\"/>\n");
+      }
+
+      public SvgWriter(StreamWriter outStream)
+      {
+         this.outStream = outStream;
       }
 
       public void Start(double width, double height)
