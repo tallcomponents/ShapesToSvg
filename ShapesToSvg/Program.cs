@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
@@ -21,12 +21,16 @@ namespace ExtractShapes
 
       static void convert(string pdfPath)
       {
+         Stopwatch stopWatch = new Stopwatch();
+
          using (FileStream inFile = new FileStream(pdfPath, FileMode.Open, FileAccess.Read))
          {
             Document document = new Document(inFile);
 
             foreach (var page in document.Pages)
             {
+               stopWatch.Restart();
+
                var viewerTransform = GetViewerTransform(page);
 
                string htmlPath = string.Format(@"..\..\{0}_{1}.html", Path.GetFileNameWithoutExtension(pdfPath), page.Index + 1);
@@ -43,6 +47,12 @@ namespace ExtractShapes
                      writer.End();
                   }
                }
+
+               stopWatch.Stop();
+               Console.WriteLine("Page {0} of {1} converted in {2} ms",
+                  page.Index + 1,
+                  Path.GetFileName(pdfPath),
+                  stopWatch.ElapsedMilliseconds);
             }
          }
       }
