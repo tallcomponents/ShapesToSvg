@@ -17,7 +17,7 @@ namespace ExtractShapes
          this.outStream = outStream;
       }
 
-      private string GenPoint(double x, double y, Matrix transform)
+      private string writePoint(double x, double y, Matrix transform)
       {
          PointF[] points = { new PointF((float)x, (float)y) };
 
@@ -26,7 +26,7 @@ namespace ExtractShapes
          return String.Format("{0} {1}", points[0].X, points[0].Y);
       }
 
-      public void WriteShapes(ShapeCollection shapes, Matrix transform)
+      public void writeShapes(ShapeCollection shapes, Matrix transform)
       {
          foreach (var shape in shapes)
          {
@@ -34,7 +34,7 @@ namespace ExtractShapes
          }
       }
 
-      public void WriteShapes(LayerShape shapes, Matrix transform)
+      public void writeLayerShape(LayerShape shapes, Matrix transform)
       {
          foreach (var shape in shapes)
          {
@@ -42,27 +42,27 @@ namespace ExtractShapes
          }
       }
 
-      private void WriteFreeHandPath(FreeHandPath path, Matrix transform)
+      private void writeFreeHandPath(FreeHandPath path, Matrix transform)
       {
          foreach (var segment in path.Segments)
          {
             if (segment is FreeHandStartSegment)
             {
                var s = (FreeHandStartSegment)segment;
-               outStream.Write("M {0} ", GenPoint(s.X, s.Y, transform));
+               outStream.Write("M {0} ", writePoint(s.X, s.Y, transform));
             }
             else if (segment is FreeHandLineSegment)
             {
                var s = (FreeHandLineSegment)segment;
-               outStream.Write("L {0} ", GenPoint(s.X1, s.Y1, transform));
+               outStream.Write("L {0} ", writePoint(s.X1, s.Y1, transform));
             }
             else if (segment is FreeHandBezierSegment)
             {
                var s = (FreeHandBezierSegment)segment;
                outStream.Write("C {0} {1} {2} ",
-                   GenPoint(s.X1, s.Y1, transform),
-                   GenPoint(s.X2, s.Y2, transform),
-                   GenPoint(s.X3, s.Y3, transform));
+                   writePoint(s.X1, s.Y1, transform),
+                   writePoint(s.X2, s.Y2, transform),
+                   writePoint(s.X3, s.Y3, transform));
             }
          }
 
@@ -72,18 +72,18 @@ namespace ExtractShapes
          }
       }
 
-      private void WriteFreeHandPath(FreeHandPathCollection paths, Matrix transform)
+      private void writeFreeHandPaths(FreeHandPathCollection paths, Matrix transform)
       {
          foreach (var path in paths)
          {
-            WriteFreeHandPath(path, transform);
+            writeFreeHandPath(path, transform);
          }
       }
 
-      private void write(FreeHandShape freeHandShape, Matrix transform)
+      private void writeFreeHandShape(FreeHandShape freeHandShape, Matrix transform)
       {
          outStream.Write("<path stroke=\"blue\" stroke-wdith=\"3\" fill=\"none\" d=\"");
-         WriteFreeHandPath(freeHandShape.Paths, transform);
+         writeFreeHandPaths(freeHandShape.Paths, transform);
          outStream.Write("\"/>\n");
       }
 
@@ -114,15 +114,15 @@ namespace ExtractShapes
 
             if (shape is TallComponents.PDF.Shapes.FreeHandShape)
             {
-               write(shape as FreeHandShape, newTransform);
+               writeFreeHandShape(shape as FreeHandShape, newTransform);
             }
             else if (shape is TallComponents.PDF.Shapes.ShapeCollection)
             {
-               WriteShapes((ShapeCollection)shape, newTransform);
+               writeShapes((ShapeCollection)shape, newTransform);
             }
             else if (shape is TallComponents.PDF.Shapes.LayerShape)
             {
-               WriteShapes((LayerShape)shape, newTransform);
+               writeLayerShape((LayerShape)shape, newTransform);
             }
          }
       }
