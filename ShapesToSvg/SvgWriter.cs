@@ -82,6 +82,20 @@ namespace ExtractShapes
          outStream.Write("\"/>\n");
       }
 
+      private void writeImageShape(ImageShape image, Matrix transform)
+      {
+         // draw an image as a box with a red border - we are interested in position only
+         outStream.Write("<path stroke=\"red\" stroke-wdith=\"3\" fill=\"none\" d=\"");
+
+         outStream.Write("M {0} ", writePoint(0, 0, transform));
+         outStream.Write("L {0} ", writePoint(0, 0 + image.Height, transform));
+         outStream.Write("L {0} ", writePoint(0 + image.Width, 0 + image.Height, transform));
+         outStream.Write("L {0} ", writePoint(0 + image.Width, 0, transform));
+         outStream.Write("Z ");
+
+         outStream.Write("\"/>\n");
+      }
+
       public SvgWriter(StreamWriter outStream)
       {
          this.outStream = outStream;
@@ -115,6 +129,10 @@ namespace ExtractShapes
             if (shape is TallComponents.PDF.Shapes.FreeHandShape)
             {
                writeFreeHandShape(shape as FreeHandShape, newTransform);
+            }
+            if (shape is TallComponents.PDF.Shapes.ImageShape)
+            {
+               writeImageShape(shape as ImageShape, newTransform);
             }
             else if (shape is TallComponents.PDF.Shapes.ShapeCollection)
             {
